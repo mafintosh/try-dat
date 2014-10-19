@@ -11,6 +11,7 @@
     "pump": "^1.0.0",
     "request": "^2.45.0",
     "send": "^0.9.3",
+    "streaming-format": "^1.1.0",
     "websocket-stream": "^1.0.2",
     "ws": "^0.4.32"
   },
