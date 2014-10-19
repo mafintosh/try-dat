@@ -1,0 +1,5 @@
+{
+  "port": 8080,
+  "domain": "try-dat.dev:8080",
+  "docker": "docker"
+}

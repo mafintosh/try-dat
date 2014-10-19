@@ -1,0 +1,29 @@
+{
+  "name": "workshop",
+  "version": "1.0.0",
+  "description": "",
+  "main": "browser.js",
+  "dependencies": {
+    "browserify": "^6.0.3",
+    "docker-browser-console": "^2.0.1",
+    "freeport": "^1.0.3",
+    "param": "^1.0.1",
+    "pump": "^1.0.0",
+    "request": "^2.45.0",
+    "send": "^0.9.3",
+    "websocket-stream": "^1.0.2",
+    "ws": "^0.4.32"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "node server.js",
+    "dev-html": "cat web/index.html | format --domain try-dat.dev:8080 > build/index.html",
+    "dev-js": "browserify web/index.js --debug > build/bundle.js",
+    "dev": "npm run dev-html; npm run dev-js",
+    "html": "cat web/index.html | format --domain workshop.mathiasbuus.eu > build/index.html",
+    "js": "browserify web/index.js > build/bundle.js",
+    "build": "npm run html; npm run js"
+  },
+  "author": "Mathias Buus",
+  "license": "MIT"
+}
