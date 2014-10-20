@@ -1,6 +1,6 @@
 {
   "name": "try-dat",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "description": "try dat using docker",
   "main": "browser.js",
   "dependencies": {
@@ -26,5 +26,18 @@
     "try-dat-server": "./server.js",
     "try-dat": "./docker-run"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mafintosh/try-dat.git"
+  },
+  "keywords": [
+    "dat",
+    "try",
+    "workshop"
+  ],
+  "bugs": {
+    "url": "https://github.com/mafintosh/try-dat/issues"
+  },
+  "homepage": "https://github.com/mafintosh/try-dat"
 }
