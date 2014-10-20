@@ -4,7 +4,7 @@
   "description": "",
   "main": "browser.js",
   "dependencies": {
-    "browserify": "^6.0.3",
+    "browserify": "^6.1.0",
     "docker-browser-console": "^2.0.1",
     "freeport": "^1.0.3",
     "param": "^1.0.1",
@@ -18,7 +18,7 @@
   "devDependencies": {},
   "scripts": {
     "start": "node server.js",
-    "dev-html": "cat web/index.html | format --domain try-dat.dev:8080 > build/index.html",
+    "dev-html": "cat web/index.html | format --domain dev.try-dat.com:8080 > build/index.html",
     "dev-js": "browserify web/index.js --debug > build/bundle.js",
     "dev": "npm run dev-html; npm run dev-js",
     "html": "cat web/index.html | format --domain workshop.mathiasbuus.eu > build/index.html",

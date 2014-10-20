@@ -13,7 +13,7 @@ var param = require('param')
 
 var DOCKER_HOST = param('docker')
 var DOMAIN = param('domain')
-
+console.log(DOMAIN)
 var replace = function() {
   return DOMAIN
 }
@@ -29,6 +29,8 @@ wss.on('connection', function(connection) {
   freeport(function(err, port) {
     if (err) connection.destroy()
 
+    console.log('Spawning new container on port %d', port)
+
     var opts = {
       env: {
         HTTP_DOMAIN: 'http://'+subdomain,
@@ -40,7 +42,8 @@ wss.on('connection', function(connection) {
     }
 
     subdomains[subdomain] = port
-    pump(stream, docker('mafintosh/try-dat', opts), stream, function() {
+    pump(stream, docker('mafintosh/try-dat', opts), stream, function(err) {
+      console.log('Container terminated (%s)', err ? err.message : 'unknown reason')
       delete subdomains[subdomain]
     })
   })
