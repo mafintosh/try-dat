@@ -1,67 +1,123 @@
+#!/usr/bin/env node
+
+var minimist = require('minimist')
 var WebSocketServer = require('ws').Server
 var freeport = require('freeport')
 var request = require('request')
 var websocket = require('websocket-stream')
 var docker = require('docker-browser-console')
+var root = require('root')
 var url = require('url')
 var send = require('send')
 var path = require('path')
-var http = require('http')
 var pump = require('pump')
-var format = require('streaming-format')
-var param = require('param')
 
-var DOCKER_HOST = param('docker')
-var DOMAIN = param('domain')
+var argv = minimist(process.argv, {
+  alias: {port:'p', host:'h', docker:'d', help:'h'},
+  default: {port:8080, host:'dev.try-dat.com'} 
+})
 
-var replace = function() {
-  return DOMAIN
+if (argv.help) {
+  console.log('Usage: try-dat [options]')
+  console.log()
+  console.log('  --port,    -p  [8080]          (port to listen on)')
+  console.log('  --host,    -h  [try-dat.com]   (public host of the server')
+  console.log('  --docker,  -d  [$DOCKER_HOST]  (optional host of the docker daemon)')
+  console.log('')
+  return
 }
 
-var server = http.createServer()
+var DOCKER_HOST = argv.docker || (process.env.DOCKER_HOST || '127.0.0.1').replace(/^.+:\/\//, '').replace(/:\d+$/, '').replace(/^\/.+$/, '127.0.0.1')
+var host = (argv.host+':'+argv.port).replace(/\:(80|443)$/, '')
+
+var server = root()
 var wss = new WebSocketServer({server:server})
-var subdomains = {}
+var containers = {}
 
 wss.on('connection', function(connection) {
-  var subdomain = Math.random().toString(36).slice(2)+'.'+DOMAIN
+  var id = connection.upgradeReq.url.slice(1) || Math.random().toString(36).slice(2)
+  var subdomain = id+'.c.'+host
   var stream = websocket(connection)
 
-  freeport(function(err, port) {
-    if (err) connection.destroy()
+  freeport(function(err, filesPort) {
+    if (err) return connection.destroy()
+    freeport(function(err, httpPort) {
+      if (err) return connection.destroy()
 
-    console.log('Spawning new container on port %d', port)
-
-    var opts = {
-      env: {
-        HTTP_DOMAIN: 'http://'+subdomain,
-        PORT: 80
-      },
-      ports: {
-        80: port
+      var container = containers[id] = {
+        id: id,
+        host: 'http://'+subdomain,
+        ports: {http:httpPort, fs:filesPort}
       }
-    }
 
-    subdomains[subdomain] = port
-    pump(stream, docker('mafintosh/try-dat', opts), stream, function(err) {
-      console.log('Container terminated (%s)', err ? err.message : 'unknown reason')
-      delete subdomains[subdomain]
+      console.log('Spawning new container (%s)', id)
+
+      var opts = {
+        env: {
+          CONTAINER_ID: container.id,
+          HOST: container.host,
+          PORT: 80
+        },
+        ports: {
+          80: httpPort,
+          8441: filesPort
+        }
+      }
+
+      pump(stream, docker('mafintosh/try-dat', opts), stream, function(err) {
+        console.log('Terminated container (%s)', id)
+        delete containers[id]
+      })
     })
   })
 })
 
-server.on('request', function(req, res) {
-  var u = url.parse(req.url, true)
-  var host = req.headers.host
+server.all(function(req, res, next) {
+  var host = req.headers.host || ''
+  var i = host.indexOf('.c.')
 
-  console.log('%s %s (%s)', req.method, u.pathname, host)
+  if (i > -1) {
+    var id = host.slice(0, i)
+    var container = containers.hasOwnProperty(id) && containers[id]
+    if (container) return pump(req, request('http://'+DOCKER_HOST+':'+container.ports.http+req.url), res)
+    return res.error(404, 'Could not find container')
+  }
 
-  if (subdomains[host]) return pump(req, request('http://'+DOCKER_HOST+':'+subdomains[host]+req.url), res)
-  if (u.pathname === '/bundle.js') return send(req, __dirname+'/build/bundle.js').pipe(res)
-
-  send(req, __dirname+'/build/index.html').pipe(res)
+  next()
 })
 
-server.listen(param('port'), function() {
-  console.log('Server is listening on port %d (%s)', server.address().port, param.env)
-  console.log('Open a browser and visit http://%s', DOMAIN)
+server.get('/-/*', function(req, res) {
+  send(req, req.params.glob, {root:path.join(__dirname, 'web')}).pipe(res)
+})
+
+server.get('/containers/{id}', function(req, res) {
+  var id = req.params.id
+  var container = containers.hasOwnProperty(id) && containers[id]
+  if (!container) return res.error(404, 'Could not find container')
+  res.send(container)
+})
+
+server.all('/http/{id}/*', function(req, res) {
+  var id = req.params.id
+  var url = req.url.slice(('/http/'+id).length)
+  var container = containers.hasOwnProperty(id) && containers[id]
+  if (!container) return res.error(404, 'Could not find container')
+  pump(req, request('http://'+DOCKER_HOST+':'+container.ports.http+'/'+url), res)
+})
+
+server.all('/files/{id}/*', function(req, res) {
+  var id = req.params.id
+  var url = req.url.slice(('/files/'+id).length)
+  var container = containers.hasOwnProperty(id) && containers[id]
+  if (!container) return res.error(404, 'Could not find container')
+  pump(req, request('http://'+DOCKER_HOST+':'+container.ports.fs+'/'+url), res)
+})
+
+server.get('/bundle.js', '/-/bundle.js')
+server.get('/index.html', '/-/index.html')
+server.get('/', '/-/index.html')
+
+server.listen(argv.port, function() {
+  console.log('Server is listening on port %d', server.address().port)
+  console.log('Open a browser and visit http://%s', host)
 })
