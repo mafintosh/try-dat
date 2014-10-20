@@ -4,7 +4,7 @@ alias ..="cd .."
 
 export EDITOR=vim
 #export PS1="\033[44m try-dat \033[m\033[42m \W \033[m "
-export PS1="[try-dat] \W $"
+export PS1="[try-dat] \W $ "
 
 if [ "$HTTP_DOMAIN" != "" ]; then
   printf "\n"
