@@ -7,6 +7,7 @@
     "browserify": "^6.1.0",
     "docker-browser-console": "^2.0.1",
     "freeport": "^1.0.3",
+    "minimist": "^1.1.0",
     "pump": "^1.0.0",
     "request": "^2.45.0",
     "root": "^1.1.0",
