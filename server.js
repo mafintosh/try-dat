@@ -13,7 +13,7 @@ var param = require('param')
 
 var DOCKER_HOST = param('docker')
 var DOMAIN = param('domain')
-console.log(DOMAIN)
+
 var replace = function() {
   return DOMAIN
 }
@@ -63,4 +63,5 @@ server.on('request', function(req, res) {
 
 server.listen(param('port'), function() {
   console.log('Server is listening on port %d (%s)', server.address().port, param.env)
+  console.log('Open a browser and visit http://%s', DOMAIN)
 })
