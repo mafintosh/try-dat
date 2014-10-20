@@ -1,6 +1,6 @@
 {
   "name": "try-dat",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "try dat using docker",
   "main": "browser.js",
   "dependencies": {
