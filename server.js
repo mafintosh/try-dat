@@ -18,7 +18,7 @@ var argv = minimist(process.argv, {
 })
 
 if (argv.help) {
-  console.log('Usage: try-dat [options]')
+  console.log('Usage: try-dat-server [options]')
   console.log()
   console.log('  --port,    -p  [8080]          (port to listen on)')
   console.log('  --host,    -h  [try-dat.com]   (public host of the server')

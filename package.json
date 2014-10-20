@@ -1,7 +1,7 @@
 {
   "name": "try-dat",
   "version": "1.0.0",
-  "description": "",
+  "description": "try dat using docker",
   "main": "browser.js",
   "dependencies": {
     "browserify": "^6.1.0",
@@ -23,7 +23,8 @@
   },
   "author": "Mathias Buus",
   "bin": {
-    "try-dat": "./server.js"
+    "try-dat-server": "./server.js",
+    "try-dat": "./docker-run"
   },
   "license": "MIT"
 }
