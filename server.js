@@ -14,7 +14,8 @@ var pump = require('pump')
 
 var argv = minimist(process.argv, {
   alias: {port:'p', host:'h', docker:'d', help:'h'},
-  default: {port:8080, host:'dev.try-dat.com'} 
+  default: {port:8080, host:'dev.try-dat.com'},
+  booleans: {persist:true}
 })
 
 if (argv.help) {
@@ -23,6 +24,7 @@ if (argv.help) {
   console.log('  --port,    -p  [8080]          (port to listen on)')
   console.log('  --host,    -h  [try-dat.com]   (public host of the server')
   console.log('  --docker,  -d  [$DOCKER_HOST]  (optional host of the docker daemon)')
+  console.log('  --persist                      (persist /root in the containers)')
   console.log('')
   return
 }
@@ -61,6 +63,12 @@ wss.on('connection', function(connection) {
         ports: {
           80: httpPort,
           8441: filesPort
+        }
+      }
+
+      if (argv.persist) {
+        opts.volumes = {
+          '/root': '/tmp/'+id
         }
       }
 
