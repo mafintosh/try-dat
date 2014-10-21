@@ -35,7 +35,9 @@ var wss = new WebSocketServer({server:server})
 var containers = {}
 
 wss.on('connection', function(connection) {
-  var id = connection.upgradeReq.url.slice(1) || Math.random().toString(36).slice(2)
+  var url = connection.upgradeReq.url.slice(1)
+  var persist = argv.persist && !!url
+  var id = url || Math.random().toString(36).slice(2)
   var subdomain = id+'.c.'+connection.upgradeReq.headers.host
   var stream = websocket(connection)
 
@@ -64,7 +66,7 @@ wss.on('connection', function(connection) {
         }
       }
 
-      if (argv.persist) {
+      if (persist) {
         opts.volumes = {
           '/root': '/tmp/'+id
         }
