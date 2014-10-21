@@ -17,14 +17,10 @@
   },
   "devDependencies": {},
   "scripts": {
-    "start": "node server.js",
-    "install": "browserify web/index.js > web/bundle.js"
+    "start": "node server.js",    
+    "build": "browserify web/index.js > web/bundle.js"
   },
   "author": "Mathias Buus",
-  "bin": {
-    "try-dat-server": "./server.js",
-    "try-dat": "./docker-run"
-  },
   "license": "MIT",
   "repository": {
     "type": "git",

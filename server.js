@@ -14,15 +14,14 @@ var pump = require('pump')
 
 var argv = minimist(process.argv, {
   alias: {port:'p', host:'h', docker:'d', help:'h'},
-  default: {port:8080, host:'dev.try-dat.com'},
+  default: {port:process.env.PORT || 8080},
   booleans: {persist:true}
 })
 
 if (argv.help) {
-  console.log('Usage: try-dat-server [options]')
+  console.log('Usage: node server.js [options]')
   console.log()
   console.log('  --port,    -p  [8080]          (port to listen on)')
-  console.log('  --host,    -h  [try-dat.com]   (public host of the server')
   console.log('  --docker,  -d  [$DOCKER_HOST]  (optional host of the docker daemon)')
   console.log('  --persist                      (persist /root in the containers)')
   console.log('')
@@ -30,7 +29,6 @@ if (argv.help) {
 }
 
 var DOCKER_HOST = argv.docker || (process.env.DOCKER_HOST || '127.0.0.1').replace(/^.+:\/\//, '').replace(/:\d+$/, '').replace(/^\/.+$/, '127.0.0.1')
-var host = (argv.host+':'+argv.port).replace(/\:(80|443)$/, '')
 
 var server = root()
 var wss = new WebSocketServer({server:server})
@@ -38,7 +36,7 @@ var containers = {}
 
 wss.on('connection', function(connection) {
   var id = connection.upgradeReq.url.slice(1) || Math.random().toString(36).slice(2)
-  var subdomain = id+'.c.'+host
+  var subdomain = id+'.c.'+connection.upgradeReq.headers.host
   var stream = websocket(connection)
 
   freeport(function(err, filesPort) {
@@ -127,5 +125,4 @@ server.get('/', '/-/index.html')
 
 server.listen(argv.port, function() {
   console.log('Server is listening on port %d', server.address().port)
-  console.log('Open a browser and visit http://%s', host)
 })

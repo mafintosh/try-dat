@@ -1,8 +1,12 @@
 # try-dat
 
+## Installation
+
 ```
 docker pull mafintosh/try-dat
-npm install -g try-dat
+git clone git://github.com/mafintosh/try-dat
+cd try-dat
+npm install
 ```
 
 ## Usage
@@ -10,16 +14,10 @@ npm install -g try-dat
 To start the try-dat server do
 
 ```
-try-dat-server # will spin up a try-dat-server on port 8080
+node server.js # will start a new server on port 8080
 ```
 
-Use `try-dat-server --help` to see all the available options
-
-You can also spawn the try-dat docker container directly by doing
-
-```
-try-dat # will spawn a new docker container and attach to it
-```
+Use `node server.js --help` to see all the available options
 
 ## License
 
