@@ -14,8 +14,7 @@ var pump = require('pump')
 
 var argv = minimist(process.argv, {
   alias: {port:'p', host:'h', docker:'d', help:'h'},
-  default: {port:process.env.PORT || 8080},
-  booleans: {persist:true}
+  default: {port:process.env.PORT || 8080}
 })
 
 if (argv.help) {
@@ -23,7 +22,7 @@ if (argv.help) {
   console.log()
   console.log('  --port,    -p  [8080]          (port to listen on)')
   console.log('  --docker,  -d  [$DOCKER_HOST]  (optional host of the docker daemon)')
-  console.log('  --persist                      (persist /root in the containers)')
+  console.log('  --allow-persist                (allow persistance of /root in the containers)')
   console.log('')
   return
 }
@@ -36,7 +35,7 @@ var containers = {}
 
 wss.on('connection', function(connection) {
   var url = connection.upgradeReq.url.slice(1)
-  var persist = argv.persist && !!url
+  var persist = argv['allow-persist'] && !!url
   var id = url || Math.random().toString(36).slice(2)
   var subdomain = id+'.c.'+connection.upgradeReq.headers.host
   var stream = websocket(connection)
