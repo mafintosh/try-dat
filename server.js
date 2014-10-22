@@ -11,6 +11,7 @@ var url = require('url')
 var send = require('send')
 var path = require('path')
 var pump = require('pump')
+var cors = require('cors')
 
 var argv = minimist(process.argv, {
   alias: {port:'p', host:'h', docker:'d', help:'h'},
@@ -79,6 +80,8 @@ wss.on('connection', function(connection) {
   })
 })
 
+server.all(cors())
+
 server.all(function(req, res, next) {
   var host = req.headers.host || ''
   var i = host.indexOf('.c.')
@@ -109,7 +112,7 @@ server.all('/http/{id}/*', function(req, res) {
   var url = req.url.slice(('/http/'+id).length)
   var container = containers.hasOwnProperty(id) && containers[id]
   if (!container) return res.error(404, 'Could not find container')
-  pump(req, request('http://'+DOCKER_HOST+':'+container.ports.http+'/'+url), res)
+  pump(req, request('http://'+DOCKER_HOST+':'+container.ports.http+url), res)
 })
 
 server.all('/files/{id}/*', function(req, res) {
@@ -117,7 +120,7 @@ server.all('/files/{id}/*', function(req, res) {
   var url = req.url.slice(('/files/'+id).length)
   var container = containers.hasOwnProperty(id) && containers[id]
   if (!container) return res.error(404, 'Could not find container')
-  pump(req, request('http://'+DOCKER_HOST+':'+container.ports.fs+'/'+url), res)
+  pump(req, request('http://'+DOCKER_HOST+':'+container.ports.fs+url), res)
 })
 
 server.get('/bundle.js', '/-/bundle.js')
