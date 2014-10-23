@@ -7,6 +7,7 @@ docker pull mafintosh/try-dat
 git clone git://github.com/mafintosh/try-dat
 cd try-dat
 npm install
+npm run build
 ```
 
 ## Usage
