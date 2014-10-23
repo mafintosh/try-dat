@@ -1,0 +1,7 @@
+
+If you run 'dat listen' you will be able to clone this dat by doing
+
+  dat clone {{host}}
+
+When you close this tab your dat will be removed
+

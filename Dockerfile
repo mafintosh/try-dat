@@ -1,7 +1,5 @@
-FROM ubuntu:14.04
-RUN apt-get update && apt-get -y install sudo curl git-core build-essential libgraphicsmagick1-dev vim python ruby1.9.3
-RUN curl -fs https://raw.githubusercontent.com/mafintosh/node-install/master/install | sh && node-install 0.10.32
-RUN npm install -g dat@6.8.1 expose-fs@1.2.0
-ADD .spawn .bashrc /
-WORKDIR /root
-ENTRYPOINT /.spawn
+FROM mafintosh/docker-adventure-time
+RUN apt-get install -qy docker.io libncurses5-dev
+RUN npm install -g dat@6.8.1 docker-run@1.3.0 bionode-sam bionode-ncbi bionode-sra bionode-bwa
+ADD welcome.txt /
+ADD .bashrc /root/
