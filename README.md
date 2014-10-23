@@ -1,24 +1,29 @@
 # try-dat
 
+try dat using docker
+
 ## Installation
 
 ```
 docker pull mafintosh/try-dat
-git clone git://github.com/mafintosh/try-dat
-cd try-dat
-npm install
-npm run build
 ```
 
 ## Usage
 
-To start the try-dat server do
+Simply run the image
 
 ```
-node server.js # will start a new server on port 8080
+docker run -it mafintosh/try-dat
 ```
 
-Use `node server.js --help` to see all the available options
+## Use with docker-browser-server
+
+You can also use this image with [adventure-time](https://github.com/maxogden/adventure-time)
+
+```
+npm install -g docker-browser-server
+docker-browser-server mafintosh/try-dat # and then set adventure-time to point to localhost:8080
+```
 
 ## License
 
