@@ -1,6 +1,6 @@
 # try-dat
 
-try dat using docker
+Try dat using docker
 
 ## Installation
 
