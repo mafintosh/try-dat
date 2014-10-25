@@ -1,7 +1,12 @@
 
-If you run 'dat listen' you will be able to clone this dat by doing
+This is a terminal connected to a virtual Ubuntu Linux server.
 
-  dat clone {{host}}
+It was created just for you (using Docker) when you loaded the page.
 
-When you close this tab your dat will be removed
+The address to your server is:
 
+  {{host}}
+
+When you close this tab this server will shut down.
+
+You can read this again by opening `welcome.txt` at any time.
