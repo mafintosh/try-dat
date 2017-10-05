@@ -5,7 +5,7 @@ Try dat using docker
 ## Installation
 
 ```
-docker pull mafintosh/try-dat
+docker pull maxogden/try-dat
 ```
 
 ## Usage
@@ -13,7 +13,7 @@ docker pull mafintosh/try-dat
 Simply run the image
 
 ```
-docker run -it mafintosh/try-dat
+docker run -it maxogden/try-dat
 ```
 
 ## Use with docker-browser-server
