@@ -22,7 +22,7 @@ You can also use this image with [adventure-time](https://github.com/maxogden/ad
 
 ```
 npm install -g docker-browser-server
-docker-browser-server mafintosh/try-dat # and then set adventure-time to point to localhost:8080
+docker-browser-server maxogden/try-dat # and then set adventure-time to point to localhost:8080
 ```
 
 ## License
