@@ -10,3 +10,6 @@ The address to your server is:
 When you close this tab this server will shut down.
 
 You can read this again by opening `welcome.txt` at any time.
+
+Try running Dat - it comes preinstalled! 
+Type `dat` in the console below.
